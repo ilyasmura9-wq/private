@@ -8,6 +8,7 @@ import type { Application, InboxJob } from "@/lib/career-ops";
 import { Badge } from "@/components/ui/badge";
 import { CompanyLogo } from "@/components/company-logo";
 import { CANONICAL_STATES, scoreNum, scoreTone } from "@/lib/format";
+import { JobNotes } from "@/components/job-notes";
 import { StatusSelect } from "@/components/status-select";
 import { applicationKey, applySavedStatus, saveStatuses } from "@/lib/pipeline-status.mjs";
 import { InboxTriage } from "@/components/inbox/inbox-triage";
@@ -399,8 +400,8 @@ export function PipelineView({
   const [rowPx, setRowPx] = useState(TRACKER_ROW_PX);
   const mountedRows = filtered.slice(span.start, span.end);
   const offscreenFailures = offscreenStatusFailures(heldSaves, mountedRows.map((row) => applicationKey(row)));
-  // The checkbox, the sortable columns and the resume column.
-  const columnCount = SORT_KEYS.length + 2;
+  // The checkbox, sortable columns, resume column and notes control.
+  const columnCount = SORT_KEYS.length + 3;
   // Same test as the selection bar's selectedRows.length > 0.
   const hasSelection = filtered.some((r) => selected.has(applicationKey(r)));
 
@@ -957,6 +958,7 @@ export function PipelineView({
                   </th>
                 ))}
                 <th className="whitespace-nowrap px-4 py-2.5 font-medium">resume</th>
+                <th className="px-4 py-2.5 font-medium">Notes</th>
               </tr>
             </thead>
             {/* Keep editors mounted while query navigation is pending: sorting
@@ -1143,6 +1145,7 @@ const TrackerRow = memo(function TrackerRow({
           <span className="text-faint">—</span>
         )}
       </td>
+      <td className="px-4 py-3"><JobNotes n={r.n} status={r.status} notes={r.notes} label={`${company.label} — ${r.role} (#${r.n})`} /></td>
     </tr>
   );
 });
